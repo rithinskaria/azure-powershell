@@ -1,5 +1,7 @@
 #Peering demo script
 cls
+#Login to Azure
+Login-AzAccount
 #Variables
 $rg = "peering-rg"
 $region1 = "eastus"
