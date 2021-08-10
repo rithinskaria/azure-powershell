@@ -42,6 +42,17 @@ $vnet = New-AzVirtualNetwork `
   -AddressPrefix 10.0.0.0/16 `
   -Subnet $jumpBox, $workload
 
+$webRule = New-AzNetworkSecurityRuleConfig -Name web-rule -Description "Allow HTTP" -Access Allow `
+    -Protocol Tcp -Direction Inbound -Priority 100 -SourceAddressPrefix Internet -SourcePortRange * `
+    -DestinationAddressPrefix * -DestinationPortRange 80
+
+$networkSecurityGroup = New-AzNetworkSecurityGroup -ResourceGroupName $rg `
+-Location $region -Name "webNSG" -SecurityRules $rdpRule
+
+Set-AzVirtualNetworkSubnetConfig -Name webSubnet -VirtualNetwork $vnet -AddressPrefix "10.0.2.0/24" `
+-NetworkSecurityGroup $networkSecurityGroup
+
+$vnet | Set-AzVirtualNetwork
 
 Write-Host "Creating availability set" `
 -ForegroundColor "Yellow" -BackgroundColor "Black"
